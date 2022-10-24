@@ -1,7 +1,8 @@
 const urlBase = "https://rickandmortyapi.com/api/character/";
 
-const loadData = (urlBase) => {
-  fetch(urlBase)
+const loadData = (urlBase, page = 1) => {
+  const url = `${urlBase}?page = ${page}`;
+  fetch(url)
     .then((respuesta) => {
       return respuesta.json();
     })
@@ -9,13 +10,34 @@ const loadData = (urlBase) => {
       const info = respJson.info;
       const personajes = respJson.results;
       console.log(info);
-      console.log(personajes);
+      //Validar botones
+      const btnprev = document.querySelector('#prev');
+      const btnnext = document.querySelector('#next');
+
+      if(!info.prev){
+        btnprev.classList.add('disbled');
+      }else{
+        btnprev.classList.remove('disabled');
+        btnprev.setAttribute('data-id', Number(page) - 1);
+      }
+      if(!info.next){
+        btnnext.classList.add('disabled');
+      }
+      else{
+        btnnext.classList.remove('disabled');
+        btnnext.setAttribute('data-id', Number(page) + 1);
+      }
+       
       showCharacters(personajes);
     });
-};
+}
 
 const showCharacters = (personajes) => {
   const listaPersonajes = document.querySelector("#characters");
+  //Limpiar contenido
+  while(listaPersonajes.firstChild){
+    listaPersonajes.removeChild(listaPersonajes.firstChild);
+  }
   personajes.forEach(personaje => {
     const div = document.createElement('div');
     div.classList.add('col');
@@ -40,4 +62,12 @@ const creaCard = (personaje) =>{
   return html;
 
 }
+const navegacion = (e) =>{
+  if(e.target.classList.contains('btn')){
+    const id = e.target.getAttribute('data-id');
+    loadData(urlBase, id);
+
+  }
+}
+document.querySelector('#botones').addEventListener('click', navegacion);
 loadData(urlBase);
