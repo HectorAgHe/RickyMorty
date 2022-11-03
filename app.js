@@ -70,9 +70,41 @@ const navegacion=(e)=>{
         loadData(urlBase, id);
     }
 }
+const modalBody = (personaje) =>{
+    const div = document.createElement('div');
+    const html = `
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog bg-dark">
+      <div class="modal-content bg-dark">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Modal title </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          ...                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  `;
+  return html;
+}
 
 
-const loadInfo=(e)=>{
+const showCharacterById = (id) =>{
+    const urlId = `${urlBase}${id}`;
+    fetch(urlId)
+    .then(result => result.json())
+    .then(character => {
+        console.log(character);
+        return modalBody(character);
+    });
+}
+
+const loadInfo = (e) => {
     e.preventDefault();
     if(e.target.classList.contains('btn')){
         const modalContent=document.querySelector('.modal-body');
@@ -80,9 +112,11 @@ const loadInfo=(e)=>{
         modalContent.appendChild(spinner());
         setTimeout(()=>{
             modalContent.removeChild(modalContent.firstChild);
-            const content=document.createElement('div');
-            const id=e.target.getAttribute('data-id');
-            content.innerHTML=`<h2>Id ${id}</h2>`;
+            const id = e.target.getAttribute('data-id');
+            //const content=document.createElement('div');
+            //const id=e.target.getAttribute('data-id');
+            //ontent.innerHTML=`<h2>Id ${id}</h2>`;
+            const content = showCharacterById(id);
         modalContent.appendChild(content);
         }, 3000);
     }
