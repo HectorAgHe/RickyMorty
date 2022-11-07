@@ -55,7 +55,7 @@ const creaCard=(personaje)=>{
     <a href="#" class="btn btn-primary"
       data-bs-toggle="modal" 
     data-bs-target="#exampleModal"
-    data id="${personaje.id}">Ver mas</a>
+    data-id="${personaje.id}">Ver mas</a>
     
   </div>
 </div>
@@ -70,41 +70,30 @@ const navegacion=(e)=>{
         loadData(urlBase, id);
     }
 }
-const modalBody = (personaje) =>{
-    const div = document.createElement('div');
-    const html = `
-    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog bg-dark">
-      <div class="modal-content bg-dark">
-        <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Modal title </h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          ...                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        </div>
-      </div>
-    </div>
-  </div>
-  `;
-  return html;
+const modalBody=(personaje)=>{
+    const div=document.createElement('div');
+    div.classList.add('text-center');
+    let html=``;
+    html +=`<img src="${personaje.image}" class="thumbnail">`;
+    html +=`<p>${personaje.status}-${personaje.species}</p>`;
+    html +=`<p>Ultima ubicacion conocida</p><p>${personaje.origin.name}</p>`;
+    html +=`<p>Ha aparecido en ${personaje.episode.length} Episodios</p>`;
+    div.innerHTML=html;
+    return div;
 }
 
-
-const showCharacterById = (id) =>{
-    const urlId = `${urlBase}${id}`;
+const showCharacterById=(id)=>{
+    const urlId=`${urlBase}${id}`; 
     fetch(urlId)
-    .then(result => result.json())
+    .then(result=>result.json())
     .then(character => {
-        console.log(character);
-        return modalBody(character);
+        const modalContent=document.querySelector('.modal-body');
+      document.querySelector('.modal-title').innerText= character.name;
+        modalContent.appendChild(modalBody(character));
     });
 }
 
-const loadInfo = (e) => {
+const loadInfo=(e)=>{
     e.preventDefault();
     if(e.target.classList.contains('btn')){
         const modalContent=document.querySelector('.modal-body');
@@ -112,12 +101,10 @@ const loadInfo = (e) => {
         modalContent.appendChild(spinner());
         setTimeout(()=>{
             modalContent.removeChild(modalContent.firstChild);
-            const id = e.target.getAttribute('data-id');
-            //const content=document.createElement('div');
-            //const id=e.target.getAttribute('data-id');
-            //ontent.innerHTML=`<h2>Id ${id}</h2>`;
-            const content = showCharacterById(id);
-        modalContent.appendChild(content);
+            const id=e.target.getAttribute('data-id');
+            //content.innerHTML=`<h2>Id ${id}</h2>`;
+            showCharacterById(id);
+        
         }, 3000);
     }
 }
@@ -126,13 +113,17 @@ const spinner=()=>{
     const div=document.createElement('div');
     const html=
     `<div class="d-flex justify-content-center">
-    <div class="spinner-border" role="status">
+    <div class="spinner-border text-light" role="status">
       <span class="visually-hidden">Loading...</span>
     </div>
   </div>`;
   div.innerHTML= html;
-  return html;
+  return div;
 }
 document.querySelector('#botones').addEventListener('click', navegacion);
 document.querySelector('#characters').addEventListener('click', loadInfo);
+
 loadData(urlBase);
+
+
+
